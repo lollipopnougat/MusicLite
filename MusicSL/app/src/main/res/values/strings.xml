@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MusicSL</string>
+    <string name="time">%1$s / %2$s</string>
+    <string name="emPicDesc">专辑图</string>
+</resources>

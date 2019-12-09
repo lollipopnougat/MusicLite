@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="UselessParent"
+    android:orientation="horizontal">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorAccent"
+        app:navigationIcon="@drawable/ic_menu_white">
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
+        android:layout_width="415dp"
+        android:layout_height="280dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_bcg" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardElevation="1dp"
+        android:layout_marginLeft="10dp"
+        app:cardCornerRadius="6dp"
+        android:layout_gravity="center"
+        android:id="@+id/card"
+        android:layout_marginRight="10dp"
+        app:cardBackgroundColor="@color/colorAccent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/image"
+            android:elevation="2dp"
+            android:src="@drawable/bg1"
+            android:background="@color/colorPrimaryLight" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="120dp"
+            android:layout_marginRight="20dp"
+            app:backgroundTint="@color/colorPrimaryLight"
+            android:src="@drawable/ic_favorite"
+            android:elevation="6dp"
+            android:text="1235" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/card_bottom"
+            android:layout_gravity="bottom"
+            android:textSize="40sp"
+            android:gravity="center"
+            android:text="Music Name"
+            android:textStyle="bold"
+            android:background="@drawable/ic_card_bottom"
+            android:elevation="3dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/auth"
+            android:layout_gravity="bottom|center"
+            android:textSize="20sp"
+            android:textColor="@color/icon"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+
+            android:text="auth."
+
+            android:elevation="3dp" />
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="80dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_repeat_white"
+                android:background="@color/transport" />
+
+            <SeekBar
+                android:layout_width="300dp"
+                android:layout_height="20dp"
+                android:thumb="@drawable/seek_bar_thumb" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time"
+            android:layout_gravity="center" />
+    </LinearLayout>
+</FrameLayout>
+
