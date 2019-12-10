@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+<com.balysv.materialripple.MaterialRippleLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ripple"
+    app:mrl_rippleColor="@color/grey"
+    app:mrl_rippleRoundedCorners="10dp"
+    app:mrl_rippleOverlay="true"
+    app:mrl_rippleAlpha="0.3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -30,3 +40,4 @@
         android:padding="4dp"/>
     
 </RelativeLayout>
+</com.balysv.materialripple.MaterialRippleLayout>

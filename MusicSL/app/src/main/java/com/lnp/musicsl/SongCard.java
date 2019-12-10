@@ -6,11 +6,15 @@ public class SongCard {
     private String songName;
     private String author;
     private Bitmap cover;
+    private String path;
+    private int duration;
 
     public SongCard(Song song) {
-        songName = song.getSong();
+        songName = song.getFileName();
         author = song.getSinger();
         cover = song.getCover();
+        path = song.getPath();
+        duration = song.getDuration();
     }
 
     public String getSongName() {
@@ -35,5 +39,21 @@ public class SongCard {
 
     public void setCover(Bitmap cover) {
         this.cover = cover;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

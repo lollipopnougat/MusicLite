@@ -18,6 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MusicListActivity"/>
+        <service
+            android:name=".MusicService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

@@ -1,27 +1,46 @@
 package com.lnp.musicsl;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import java.util.List;
 
 public class MusicListFragment extends Fragment {
+    private static final int SYNC_TIME = 1;
+    private static final int INIT_SEEK_BAR = 2;
+    private static final int FINE = 3;
+    private static final int START = 4;
     private RecyclerView mCrimeRecyclerView;
     private MusicAdapter mAdapter;
-    private boolean mSubtitleVisible;
+    //private MusicConnector conn = new MusicConnector();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        MainActivity.setStatusBarColor(getActivity(), Color.rgb(0,120,133));
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -32,6 +51,11 @@ public class MusicListFragment extends Fragment {
         mCrimeRecyclerView = view.findViewById(R.id.music_recyler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
+
+//        Intent intent = MusicService.newIntent(getActivity());
+//        //getContext().startService(intent);
+//        conn = new MusicConnector();
+//        getContext().bindService(intent, conn, Context.BIND_AUTO_CREATE);
         return view;
     }
 
@@ -39,6 +63,12 @@ public class MusicListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateUI();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //if(conn != null) getContext().unbindService(conn);
     }
 
     private void updateUI() {
@@ -52,8 +82,23 @@ public class MusicListFragment extends Fragment {
             mAdapter.setMusics(songs);
             mAdapter.notifyDataSetChanged();
         }
-
     }
+    /*private MusicService.MusicBinder musicBinder;
+
+    private class MusicConnector implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            musicBinder = ((MusicService.MusicBinder) iBinder);
+            Log.i("测试","服务已经启动");
+            Toast.makeText(getContext(),"服务启动成功",Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            musicBinder = null;
+        }
+    }*/
 
     private class MusicHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -72,15 +117,35 @@ public class MusicListFragment extends Fragment {
 
         public void bindMusic(Song song) {
             mSong = song;
-            mNameTextView.setText(mSong.getSong());
+            mNameTextView.setText(mSong.getFileName());
             mDateTextView.setText(mSong.getSinger());
         }
 
+
         @Override
         public void onClick(View v) {
+//            Intent intent = MusicService.newIntent(getActivity());
+            //getContext().startService(intent);
+//            conn = new MusicConnector();
+//            getContext().bindService(intent, conn, Context.BIND_AUTO_CREATE);
+            //musicBinder.start(mSong.getPath());
+            //musicBinder.play();
+            if(MainFragment.musicBinder.isPlaying()) {
+                MainFragment.musicBinder.pause();
+            }
+            Message msgf = MainFragment.handler.obtainMessage();
+            msgf.what = INIT_SEEK_BAR;
+            msgf.obj = mSong.getDuration();
+            MainFragment.musicBinder.start(mSong.getPath());
+            MainFragment.handler.sendMessage(msgf);
+            MainFragment.musicBinder.play();
+            MainFragment.handler.sendEmptyMessage(START);
+            //new SyncSeekBar().start();
             //Intent intent = MusicPagerActivity.newIntent(getActivity(), mMusic.getId());
             //startActivity(intent);
         }
+
+
     }
 
     private class MusicAdapter extends RecyclerView.Adapter<MusicHolder> {

@@ -4,59 +4,91 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawerLayout">
+    android:id="@+id/drawer_layout">
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="horizontal"
         tools:ignore="UselessParent"
-        android:orientation="horizontal">
+        android:clipChildren="false">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="235dp"
+            android:src="@drawable/ic_bcg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tool_bar" />
+
+
 
         <androidx.appcompat.widget.Toolbar
-            android:layout_width="match_parent"
+            android:id="@+id/tool_bar"
+            android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorAccent"
-            android:id="@+id/tool_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_menu_white">
 
 
         </androidx.appcompat.widget.Toolbar>
 
-        <ImageView
-            android:layout_width="411dp"
-            android:layout_height="235dp"
-            android:layout_marginTop="53dp"
-            android:src="@drawable/ic_bcg" />
 
         <androidx.viewpager.widget.ViewPager
-            android:layout_width="260dp"
-            android:layout_height="400dp"
-            android:layout_gravity="center"
             android:id="@+id/view_pager"
-            app:cardBackgroundColor="@color/colorAccent"/>
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="40dp"
+            android:overScrollMode="never"
+            app:cardBackgroundColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tool_bar"
+            app:layout_constraintTop_toTopOf="@+id/tool_bar"
+            android:padding="@dimen/cardview_compat_inset_shadow"/>
+
 
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="80dp">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tool_bar"
+            app:layout_constraintTop_toBottomOf="@+id/view_pager">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
+                <com.balysv.materialripple.MaterialRippleLayout
+                    android:id="@+id/ripple"
+                    app:mrl_rippleColor="@color/grey"
+                    app:mrl_rippleRoundedCorners="15dp"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleAlpha="0.3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@color/transport"
                     android:src="@drawable/ic_repeat_white"
-                    android:background="@color/transport" />
-
+                    android:id="@+id/music_mode"/>
+                </com.balysv.materialripple.MaterialRippleLayout>
                 <SeekBar
                     android:layout_width="300dp"
                     android:layout_height="20dp"
+                    android:id="@+id/seek_bar"
                     android:thumb="@drawable/seek_bar_thumb" />
 
             </LinearLayout>
@@ -64,15 +96,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/time"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:id="@+id/current_time"
+                android:text="@string/time" />
         </LinearLayout>
-    </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <FrameLayout
         android:layout_height="wrap_content"
         android:layout_width="240dp"
         android:layout_gravity="start">
-
+        <include layout="@layout/nav_header_main"/>
     </FrameLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -36,17 +36,25 @@ public class MusicUtils {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Song song = new Song();
+
                 song.setSong(cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)));
                 song.setSinger(cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)));
                 song.setPath(cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)));
                 song.setDuration(cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)));
                 song.setSize(cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)));
+                String[] fnames = song.getPath().split("/");
+                song.setFileName(fnames[fnames.length - 1]);
+                Log.i(TAG, "歌曲:" + song.getSong() + "路径： " + song.getPath() + "时长:" + song.getDuration());
+                Bitmap bitmap;
                 try {
-                    Bitmap bitmap = MusicUtils.getCover(song.getPath());
+                    bitmap = MusicUtils.getCover(song.getPath());
                     song.setCover(bitmap);
                 } catch (Exception ex) {
                     Log.i(TAG, song.getSong() + "不存在封面");
+                    bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.bg1);
+                    song.setCover(bitmap);
                 }
+
                 /*if (song.getSize() > 1000 * 800) {//过滤掉短音频
                     // 分离出歌曲名和歌手
                     if (song.getSong().contains("-")) {
@@ -56,7 +64,9 @@ public class MusicUtils {
                     }
                     list.add(song);
                 }*/
+                list.add(song);
                 cc++;
+                if (cc == 30) break;
             }
             // 释放资源
             cursor.close();

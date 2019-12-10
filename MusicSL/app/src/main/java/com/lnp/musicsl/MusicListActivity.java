@@ -12,7 +12,6 @@ public class MusicListActivity extends  SingleFragmentActivity {
     }
 
     public static Intent newIntent(Context packageContext) {
-        Intent intent = new Intent(packageContext, MusicListActivity.class);
-        return intent;
+        return new Intent(packageContext, MusicListActivity.class);
     }
 }

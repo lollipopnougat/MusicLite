@@ -1,13 +1,20 @@
 package com.lnp.musicsl;
 
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
+
 
 public class Song {
 
-    private String singer;
+    private String singer = "佚名";
 
-    private String song;
+    private String song = "未标题";
+
+    private String fileName;
 
     private String path;
 
@@ -22,7 +29,8 @@ public class Song {
     }
 
     public void setSinger(String singer) {
-        this.singer = singer;
+        Log.i("歌手名字是",singer);
+        if (!singer.equals("<unknown>")) this.singer = singer;
     }
 
     public String getSong() {
@@ -30,7 +38,7 @@ public class Song {
     }
 
     public void setSong(String song) {
-        this.song = song;
+        if (song != null) this.song = song;
     }
 
     public String getPath() {
@@ -63,6 +71,14 @@ public class Song {
 
     public void setCover(Bitmap cover) {
         this.cover = cover;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }
 

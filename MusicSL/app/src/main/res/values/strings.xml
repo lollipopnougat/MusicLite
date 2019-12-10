@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">MusicSL</string>
-    <string name="time">%1$s / %2$s</string>
+    <string name="time">0:0 / 0:0</string>
     <string name="emPicDesc">专辑图</string>
+    <string name="nav_header_desc">描述</string>
+    <string name="nav_header_title">标题</string>
+    <string name="nav_header_subtitle">副标题</string>
+    <string name="music_list_btn">播放列表</string>
+    <string name="about">关于</string>
 </resources>

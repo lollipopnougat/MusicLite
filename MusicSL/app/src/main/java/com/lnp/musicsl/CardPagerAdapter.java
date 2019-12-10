@@ -1,21 +1,30 @@
 package com.lnp.musicsl;
 
+import android.content.Intent;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.PagerAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
-
+    private static final int SYNC_TIME = 1;
+    private static final int INIT_SEEK_BAR = 2;
+    private static final int FINE = 3;
+    private static final int START = 4;
     private List<CardView> mViews;
     private List<SongCard> mData;
     private float mBaseElevation;
+    private int clickWho = -1;
 
     public CardPagerAdapter() {
         mData = new ArrayList<>();
@@ -32,10 +41,9 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
     }
 
 
-
     @Override
     public CardView getCardViewAt(int position) {
-        if(mViews.size() == 0) throw new RuntimeException("空！");
+        if (mViews.size() == 0) throw new RuntimeException("空！");
         return mViews.get(position);
     }
 
@@ -55,6 +63,33 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
         container.addView(view);
         bind(mData.get(position), view);
         CardView cardView = (CardView) view.findViewById(R.id.card_view);
+        cardView.setOnClickListener(v -> {
+            if (clickWho != position) {
+                clickWho = position;
+            } else {
+                if (MainFragment.musicBinder.isPlaying()) {
+                    MainFragment.musicBinder.pause();
+                } else {
+                    MainFragment.musicBinder.play();
+                }
+                return;
+            }
+            SongCard mSongCard = mData.get(position);
+            if (MainFragment.musicBinder.isPlaying()) {
+                MainFragment.musicBinder.pause();
+            }
+            Message msgf = MainFragment.handler.obtainMessage();
+            msgf.what = INIT_SEEK_BAR;
+            msgf.obj = mSongCard.getDuration();
+            MainFragment.musicBinder.start(mSongCard.getPath());
+            MainFragment.handler.sendMessage(msgf);
+            MainFragment.musicBinder.play();
+            MainFragment.handler.sendEmptyMessage(START);
+        });
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(v -> {
+            Toast.makeText(container.getContext(), "喜欢", Toast.LENGTH_SHORT).show();
+        });
 
         if (mBaseElevation == 0) {
             mBaseElevation = cardView.getCardElevation();
@@ -72,7 +107,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
     }
 
     private void bind(SongCard item, View view) {
-        TextView nameTextView =  view.findViewById(R.id.card_song_name);
+        TextView nameTextView = view.findViewById(R.id.card_song_name);
         TextView authTextView = view.findViewById(R.id.auth_text);
         ImageView imageView = view.findViewById(R.id.card_cover);
         nameTextView.setText(item.getSongName());
