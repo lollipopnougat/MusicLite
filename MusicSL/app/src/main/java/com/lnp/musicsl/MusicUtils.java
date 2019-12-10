@@ -57,7 +57,6 @@ public class MusicUtils {
                     list.add(song);
                 }*/
                 cc++;
-                if(cc==10) break;
             }
             // 释放资源
             cursor.close();
@@ -85,5 +84,9 @@ public class MusicUtils {
         //ImageView musicCover;
         //musicCover.setImageBitmap(bitmap);
         return BitmapFactory.decodeByteArray(picture, 0, picture.length);
+    }
+
+    private void musicPlay(int position) {
+
     }
 }
