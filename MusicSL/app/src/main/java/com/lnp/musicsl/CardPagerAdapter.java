@@ -88,6 +88,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
             Message msgf = MainFragment.handler.obtainMessage();
             msgf.what = INIT_SEEK_BAR;
             msgf.obj = mSongCard.getDuration();
+            msgf.arg1 = position;
             MainFragment.musicBinder.start(mSongCard.getPath());
             MainFragment.handler.sendMessage(msgf);
             MainFragment.musicBinder.play();

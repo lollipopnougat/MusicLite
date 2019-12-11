@@ -48,6 +48,9 @@
             android:paddingTop="10dp"
             android:text="Music Name"
             android:textStyle="bold"
+            android:textColor="@color/primaryText"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:background="@drawable/ic_card_btm"
             app:elevation="3dp" />
 
@@ -57,8 +60,7 @@
             android:id="@+id/auth_text"
             android:layout_gravity="bottom|center"
             android:textSize="16sp"
-            android:textColor="@color/icon"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="40dp"
             android:gravity="center"
             android:text="auth."
             app:elevation="3dp" />

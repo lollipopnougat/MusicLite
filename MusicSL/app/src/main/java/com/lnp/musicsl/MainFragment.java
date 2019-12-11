@@ -22,6 +22,7 @@ import androidx.viewpager.widget.ViewPager;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class MainFragment extends Fragment implements EasyPermissions.PermissionCallbacks {
@@ -30,14 +31,19 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
     private CardPagerAdapter mCardAdapter;
     private ShadowTransformer mCardShadowTransformer;
     private Toolbar mtoolbar;
-    private List<Song> musicData;
+    private static List<Song> musicData;
     private static SeekBar mSeekBar;
     private ImageButton imageButton;
     private TextView musicListBtn;
     private TextView aboutBtn;
     private DrawerLayout drawerLayout;
     private static TextView mTextView;
+    public static final int SINGLE_CYCLE = 1;     //单曲循环
+    public static final int ALL_CYCLE = 2;        //全部循环
+    public static final int RANDOM_PLAY = 3;      //随机播放
     private ProgressBar progressBar;
+    private static int repeatMode = ALL_CYCLE;
+    private static int po;
     private MusicConnector conn = new MusicConnector();
     private static final int CODE = 1;
     private static final int SYNC_TIME = 1;
@@ -69,8 +75,14 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
             startActivity(intent);
         });
         imageButton.setOnClickListener(v -> {
-            Intent intent = MusicListActivity.newIntent(getContext());
-            startActivity(intent);
+            switch (repeatMode) {
+                case ALL_CYCLE: repeatMode = SINGLE_CYCLE;imageButton.setImageResource(R.drawable.ic_repeat_one_white);break;
+                case SINGLE_CYCLE: repeatMode = RANDOM_PLAY;imageButton.setImageResource(R.drawable.ic_shuffle_white);break;
+                case RANDOM_PLAY: repeatMode =  ALL_CYCLE;imageButton.setImageResource(R.drawable.ic_repeat_white);break;
+                default: break;
+            }
+            //Intent intent = MusicListActivity.newIntent(getContext());
+            //startActivity(intent);
         });
         mTextView = view.findViewById(R.id.current_time);
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -167,13 +179,32 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
 
             } else if (msg.what == INIT_SEEK_BAR) {
                 int time = (int) msg.obj;
+                po = msg.arg1;
                 mSeekBar.setMax(time / 1000);
                 fullTime = String.format("%d : %d ", TimeUnit.MILLISECONDS.toMinutes(time),
                         TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
                 mTextView.setText("0 : 0 / " + fullTime);
 
             } else if (msg.what == FINE) {
+                switch (repeatMode) {
+                    case ALL_CYCLE:
+                        if (po == musicData.size() - 1) {
+                            po = 0;
+                        } else {
+                            po++;
+                        }
+                        break;
+                    case SINGLE_CYCLE:
+                        break;
+                    case RANDOM_PLAY:
+                        Random random = new Random();
+                        po = random.nextInt(musicData.size());
+                        break;
+                    default: break;
+                }
 
+                MainFragment.musicBinder.start(musicData.get(po).getPath());
+                new SyncSeekBar().start();
             } else if (msg.what == START) {
                 new SyncSeekBar().start();
             } else if (msg.what == OK) {
@@ -204,18 +235,20 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
         }
     }
 
+
+    // 不会调用这个，回调自动在Activity中执行
     @Override
     public void onPermissionsGranted(int requestCode, List<String> list) {
         // Some permissions have been granted
         // ...
         Log.i("测试", "requestscode: " + requestCode);
         if (requestCode == CODE) {
-            updateViewPager();
         }
 
 
     }
 
+    // 不会调用这个，回调自动在Activity中执行
     @Override
     public void onPermissionsDenied(int requestCode, List<String> list) {
         // Some permissions have been denied
@@ -242,7 +275,7 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
         protected List<Song> doInBackground(Void... voids) {
             MusicUtils musicUtils = MusicUtils.getMusicUtils(getContext());
             musicData = musicUtils.getMusicData();
-            Log.i("测试","异步");
+            Log.i("测试", "异步");
             return musicData;
         }
     };

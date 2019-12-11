@@ -15,6 +15,7 @@ public class MusicService extends Service {
     private MusicBinder musicBinder;
     private boolean isSetData;//是否设置资源
     private boolean isPausing;
+    private boolean isFine;
 
     //播放模式
     public static final int SINGLE_CYCLE = 1;     //单曲循环
@@ -34,6 +35,7 @@ public class MusicService extends Service {
         //初始化数据
         isSetData = false;
         isPausing = true;
+        isFine = false;
         MODE = ALL_CYCLE;
         mediaPlayer = new MediaPlayer();
         musicBinder = new MusicBinder();
@@ -46,12 +48,9 @@ public class MusicService extends Service {
             mediaPlayer.setDataSource(path);
             isSetData = true;
 
-            //异步缓冲准备及监听
-            mediaPlayer.prepareAsync();
-            mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
-
             //播放结束监听
             mediaPlayer.setOnCompletionListener(mp -> {
+
                 switch (MODE) {
                     case SINGLE_CYCLE:
                         //单曲循环
@@ -73,6 +72,12 @@ public class MusicService extends Service {
                     default:
                 }
             });
+
+            //异步缓冲准备及监听
+            mediaPlayer.prepareAsync();
+            mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
+
+
         } catch (Exception e) {
             e.printStackTrace();
             isSetData = false;
@@ -99,6 +104,7 @@ public class MusicService extends Service {
 
         //开始播放
         void start(String songUrl) {
+            isFine = true;
             playMusic(songUrl);
         }
 
@@ -122,6 +128,7 @@ public class MusicService extends Service {
 
         //继续播放
         boolean play() {
+            isFine = false;
             if (isSetData) {
                 if (!mediaPlayer.isPlaying()) {
                     mediaPlayer.start();
@@ -155,6 +162,11 @@ public class MusicService extends Service {
                 return -1;
             }
         }
+
+        boolean getIsFine() {
+            return isFine;
+        }
+
 
         /**
          * 获取歌曲总时长

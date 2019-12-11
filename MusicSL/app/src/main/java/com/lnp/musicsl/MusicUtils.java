@@ -67,7 +67,7 @@ public class MusicUtils {
                 }*/
                 list.add(song);
                 //cc++;
-                //if (cc == 30) break;
+                //if (cc == 50) break;
             }
             // 释放资源
             cursor.close();

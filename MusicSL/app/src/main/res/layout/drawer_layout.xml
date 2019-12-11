@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         tools:ignore="UselessParent"
+        android:background="@color/icon"
         android:clipChildren="false">
 
         <ImageView
@@ -18,6 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="235dp"
             android:src="@drawable/ic_bcg"
+            android:scaleType="centerCrop"
             android:layout_marginTop="36dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

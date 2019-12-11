@@ -15,7 +15,7 @@ public class SyncSeekBar extends Thread {
         Log.i("测试", "启动多线程");
         while(!MainFragment.musicBinder.isPlaying());
         Log.i("测试", "music播放:" + MainFragment.musicBinder.isPlaying());
-        while (MainFragment.musicBinder.isPlaying()) {
+        while (!MainFragment.musicBinder.getIsFine()) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -23,7 +23,7 @@ public class SyncSeekBar extends Thread {
             }
 
             int nowPosition = MainFragment.musicBinder.getCurrent();
-            if (nowPosition == MainFragment.musicBinder.getDuration()) {
+            if ((int)(nowPosition/1000) == (int)(MainFragment.musicBinder.getDuration()/1000)) {
                 MainFragment.handler.sendEmptyMessage(FINE);
             }
 

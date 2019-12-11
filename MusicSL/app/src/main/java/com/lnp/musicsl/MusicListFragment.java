@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +31,7 @@ public class MusicListFragment extends Fragment {
     private static final int PAUSE = 5;
     private RecyclerView mCrimeRecyclerView;
     private MusicAdapter mAdapter;
+    private Toolbar toobar;
     //private MusicConnector conn = new MusicConnector();
 
     @Override
@@ -48,7 +50,10 @@ public class MusicListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.music_list_fragment, container, false);
-
+        toobar = view.findViewById(R.id.list_tool_bar);
+        toobar.setNavigationOnClickListener(v -> {
+            getActivity().finish();
+        });
         mCrimeRecyclerView = view.findViewById(R.id.music_recyler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
@@ -105,7 +110,7 @@ public class MusicListFragment extends Fragment {
 
         private TextView mNameTextView;
         private TextView mDateTextView;
-
+        private int position;
         private Song mSong;
 
         public MusicHolder(View itemView) {
@@ -116,8 +121,9 @@ public class MusicListFragment extends Fragment {
             mDateTextView = itemView.findViewById(R.id.list_item_music_auth_text_view);
         }
 
-        public void bindMusic(Song song) {
+        public void bindMusic(Song song,int p) {
             mSong = song;
+            position = p;
             mNameTextView.setText(mSong.getFileName());
             mDateTextView.setText(mSong.getSinger());
         }
@@ -137,6 +143,7 @@ public class MusicListFragment extends Fragment {
             Message msgf = MainFragment.handler.obtainMessage();
             msgf.what = INIT_SEEK_BAR;
             msgf.obj = mSong.getDuration();
+            msgf.arg1 = position;
             MainFragment.musicBinder.start(mSong.getPath());
             MainFragment.handler.sendMessage(msgf);
             MainFragment.musicBinder.play();
@@ -168,7 +175,7 @@ public class MusicListFragment extends Fragment {
         @Override
         public void onBindViewHolder(MusicHolder holder, int position) {
             Song song = mSongs.get(position);
-            holder.bindMusic(song);
+            holder.bindMusic(song,position);
         }
 
         @Override

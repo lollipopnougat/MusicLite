@@ -14,10 +14,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-    <CheckBox
+    <ImageButton
         android:id="@+id/list_item_music_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/ic_more_vert"
+        android:layout_marginTop="5dp"
+        android:background="@color/transport"
         android:layout_alignParentRight="true"
         android:padding="4dp"/>
 
