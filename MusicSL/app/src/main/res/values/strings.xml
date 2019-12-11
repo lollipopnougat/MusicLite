@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MusicSL</string>
+    <string name="app_name">种草音乐</string>
     <string name="time">0:0 / 0:0</string>
     <string name="emPicDesc">专辑图</string>
     <string name="nav_header_desc">描述</string>

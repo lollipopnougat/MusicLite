@@ -21,10 +21,12 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
     private static final int INIT_SEEK_BAR = 2;
     private static final int FINE = 3;
     private static final int START = 4;
+    private static final int PAUSE = 5;
     private List<CardView> mViews;
     private List<SongCard> mData;
     private float mBaseElevation;
     private int clickWho = -1;
+    private TextView pauseBtn;
 
     public CardPagerAdapter() {
         mData = new ArrayList<>();
@@ -62,15 +64,20 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.card_view, container, false);
         container.addView(view);
         bind(mData.get(position), view);
-        CardView cardView = (CardView) view.findViewById(R.id.card_view);
+        TextView colorBtn = view.findViewById(R.id.card_song_name);
+        CardView cardView = view.findViewById(R.id.card_view);
         cardView.setOnClickListener(v -> {
             if (clickWho != position) {
+                if(pauseBtn != null) pauseBtn.setBackgroundResource(R.drawable.ic_card_btm);
                 clickWho = position;
             } else {
-                if (MainFragment.musicBinder.isPlaying()) {
-                    MainFragment.musicBinder.pause();
-                } else {
+                pauseBtn = colorBtn;
+                if (MainFragment.musicBinder.isPausing()) {
+                    colorBtn.setBackgroundResource(R.drawable.ic_card_btm);
                     MainFragment.musicBinder.play();
+                } else {
+                    MainFragment.musicBinder.pause();
+                    colorBtn.setBackgroundResource(R.drawable.ic_card_btm_pause);
                 }
                 return;
             }

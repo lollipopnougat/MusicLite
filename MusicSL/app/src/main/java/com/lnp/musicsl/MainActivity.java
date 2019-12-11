@@ -1,19 +1,25 @@
 package com.lnp.musicsl;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
+import pub.devrel.easypermissions.EasyPermissions;
+
+import java.util.List;
 
 
-public class MainActivity extends SingleFragmentActivity {
-
+public class MainActivity extends SingleFragmentActivity implements EasyPermissions.PermissionCallbacks {
+    private static final int OK = 6;
+    private static final int CODE = 1;
     /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +28,8 @@ public class MainActivity extends SingleFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         //translucentStatusBar(this,true);
         setStatusBarColor(this, Color.rgb(0,120,133));
         super.onCreate(savedInstanceState);
@@ -72,6 +80,32 @@ public class MainActivity extends SingleFragmentActivity {
         }
     }
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> list) {
+        // Some permissions have been granted
+        // ...
+        Log.i("测试","requestscode: "+requestCode);
+        if (requestCode == CODE) {
+            MainFragment.handler.sendEmptyMessage(OK);
+        }
+
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> list) {
+        // Some permissions have been denied
+        // ...
+        finish();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        Log.i("测试","2处回调："+requestCode);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
 
     @Override
     protected Fragment createFragment() {

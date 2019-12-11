@@ -12,10 +12,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.RequiresApi;
@@ -40,18 +37,20 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
     private TextView aboutBtn;
     private DrawerLayout drawerLayout;
     private static TextView mTextView;
+    private ProgressBar progressBar;
     private MusicConnector conn = new MusicConnector();
-    private int CODE = 1;
+    private static final int CODE = 1;
     private static final int SYNC_TIME = 1;
     private static final int INIT_SEEK_BAR = 2;
     private static final int FINE = 3;
     private static final int START = 4;
+    private static final int PAUSE = 5;
+    private static final int OK = 6;
+    private static boolean isOK = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE};
         View view = inflater.inflate(R.layout.drawer_layout, container, false);
         mViewPager = view.findViewById(R.id.view_pager);
@@ -59,9 +58,10 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
         mSeekBar = view.findViewById(R.id.seek_bar);
         drawerLayout = view.findViewById(R.id.drawer_layout);
         imageButton = view.findViewById(R.id.music_mode);
+        progressBar = view.findViewById(R.id.search_progress);
         aboutBtn = view.findViewById(R.id.music_about_btn);
-        aboutBtn.setOnClickListener(v->{
-            Toast.makeText(getActivity(),"啊什么也没有",Toast.LENGTH_SHORT).show();
+        aboutBtn.setOnClickListener(v -> {
+            Toast.makeText(getActivity(), "啊什么也没有--by lnp", Toast.LENGTH_SHORT).show();
         });
         musicListBtn = view.findViewById(R.id.music_list_btn);
         musicListBtn.setOnClickListener(v -> {
@@ -76,8 +76,8 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                Log.i("测试","当前ProcessBar" + b);
-                if(b) musicBinder.seekTo(mSeekBar.getProgress() * 1000);
+                Log.i("测试", "当前ProcessBar" + b);
+                if (b) musicBinder.seekTo(mSeekBar.getProgress() * 1000);
                 //musicBinder.seekTo(mSeekBar.getProgress() * 1000);
 
             }
@@ -102,9 +102,13 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
             //startActivity(intent);
         });
         if (EasyPermissions.hasPermissions(getContext(), perms)) {
-            updateViewPager();
+            task.execute();
+            //updateViewPager();
         } else {
-            EasyPermissions.requestPermissions(getActivity(), "请求，请求！", CODE, perms);
+            EasyPermissions.requestPermissions(getActivity(), "需要访问存储的权限哟", CODE, perms);
+            new Handler().postDelayed(() -> {
+                if (isOK) task.execute();
+            }, 4000);
         }
 
         return view;
@@ -114,6 +118,7 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // Forward results to EasyPermissions
+        Log.i("测试", "2处回调：" + requestCode);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
@@ -123,11 +128,12 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
         if (conn != null) getContext().unbindService(conn);
     }
 
-    private void updateViewPager() {
-        MusicUtils musicUtils = MusicUtils.getMusicUtils(getContext());
-        musicData = musicUtils.getMusicData();
-        Toast.makeText(getContext(), Integer.toString(musicData.size()), Toast.LENGTH_SHORT).show();
-        if (musicData.size() != 0) {
+    // 音乐扫描部分建议使用异步
+    public void updateViewPager() {
+        //MusicUtils musicUtils = MusicUtils.getMusicUtils(getContext());
+        //musicData = musicUtils.getMusicData();
+        //Toast.makeText(getContext(), Integer.toString(musicData.size()), Toast.LENGTH_SHORT).show();
+        if (musicData != null && musicData.size() != 0) {
             mCardAdapter = new CardPagerAdapter();
             for (Song song : musicData) {
                 mCardAdapter.addSongCard(new SongCard(song));
@@ -157,26 +163,29 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
                 mSeekBar.animate();
                 String currTime = String.format("%d : %d ", TimeUnit.MILLISECONDS.toMinutes(time),
                         TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
-                mTextView.setText(currTime + " / "  + fullTime);
+                mTextView.setText(currTime + " / " + fullTime);
 
             } else if (msg.what == INIT_SEEK_BAR) {
                 int time = (int) msg.obj;
                 mSeekBar.setMax(time / 1000);
                 fullTime = String.format("%d : %d ", TimeUnit.MILLISECONDS.toMinutes(time),
                         TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
-                mTextView.setText("0:0 /" + " " + fullTime);
+                mTextView.setText("0 : 0 / " + fullTime);
 
             } else if (msg.what == FINE) {
 
-            }
-            else if (msg.what == START) {
+            } else if (msg.what == START) {
                 new SyncSeekBar().start();
+            } else if (msg.what == OK) {
+                isOK = true;
             }
+
 
         }
 
 
     };
+
 
     public static MusicService.MusicBinder musicBinder;
 
@@ -199,6 +208,7 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
     public void onPermissionsGranted(int requestCode, List<String> list) {
         // Some permissions have been granted
         // ...
+        Log.i("测试", "requestscode: " + requestCode);
         if (requestCode == CODE) {
             updateViewPager();
         }
@@ -212,4 +222,28 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
         // ...
         getActivity().finish();
     }
+
+    @SuppressLint("StaticFieldLeak")
+    private AsyncTask<Void, Void, List<Song>> task = new AsyncTask<Void, Void, List<Song>>() {
+        @Override
+        protected void onPostExecute(List<Song> list) {
+            super.onPostExecute(list);
+            musicData = list;
+            progressBar.setVisibility(View.GONE);
+            updateViewPager();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected List<Song> doInBackground(Void... voids) {
+            MusicUtils musicUtils = MusicUtils.getMusicUtils(getContext());
+            musicData = musicUtils.getMusicData();
+            Log.i("测试","异步");
+            return musicData;
+        }
+    };
 }

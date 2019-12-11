@@ -30,6 +30,7 @@ public class MusicUtils {
 
     private MusicUtils(Context context) {
         int cc = 0;
+        
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
                 MediaStore.Audio.AudioColumns.IS_MUSIC);
@@ -65,8 +66,8 @@ public class MusicUtils {
                     list.add(song);
                 }*/
                 list.add(song);
-                cc++;
-                if (cc == 30) break;
+                //cc++;
+                //if (cc == 30) break;
             }
             // 释放资源
             cursor.close();

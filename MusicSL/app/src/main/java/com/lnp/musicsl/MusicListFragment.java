@@ -27,6 +27,7 @@ public class MusicListFragment extends Fragment {
     private static final int INIT_SEEK_BAR = 2;
     private static final int FINE = 3;
     private static final int START = 4;
+    private static final int PAUSE = 5;
     private RecyclerView mCrimeRecyclerView;
     private MusicAdapter mAdapter;
     //private MusicConnector conn = new MusicConnector();

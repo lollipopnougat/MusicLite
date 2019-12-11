@@ -13,7 +13,8 @@ public class MusicService extends Service {
 
     private MediaPlayer mediaPlayer;
     private MusicBinder musicBinder;
-    private boolean isSetData;                    //是否设置资源
+    private boolean isSetData;//是否设置资源
+    private boolean isPausing;
 
     //播放模式
     public static final int SINGLE_CYCLE = 1;     //单曲循环
@@ -32,6 +33,7 @@ public class MusicService extends Service {
 
         //初始化数据
         isSetData = false;
+        isPausing = true;
         MODE = ALL_CYCLE;
         mediaPlayer = new MediaPlayer();
         musicBinder = new MusicBinder();
@@ -58,13 +60,13 @@ public class MusicService extends Service {
 
                     case ALL_CYCLE:
                         //全部循环
-                        isSetData = false;
+                        //isSetData = false;
                         //playNextSong();                 //调用MainActivity的 playNextSong方法
                         break;
 
                     case RANDOM_PLAY:
                         //随机播放
-                        isSetData = false;
+                        //isSetData = false;
                         //playRandomSong();               //这里也是MainActivity的方法
                         break;
 
@@ -90,6 +92,7 @@ public class MusicService extends Service {
 
     class MusicBinder extends Binder {
 
+
         MusicService getService() {
             return MusicService.this;
         }
@@ -113,6 +116,10 @@ public class MusicService extends Service {
             return mediaPlayer.isPlaying();
         }
 
+        boolean isPausing() {
+            return isPausing;
+        }
+
         //继续播放
         boolean play() {
             if (isSetData) {
@@ -120,6 +127,7 @@ public class MusicService extends Service {
                     mediaPlayer.start();
                 }
             }
+            isPausing = false;
             return mediaPlayer.isPlaying();
         }
 
@@ -130,6 +138,7 @@ public class MusicService extends Service {
                     mediaPlayer.pause();
                 }
             }
+            isPausing = true;
             return mediaPlayer.isPlaying();
         }
 
@@ -143,7 +152,7 @@ public class MusicService extends Service {
             if (isSetData) {
                 return mediaPlayer.getCurrentPosition();
             } else {
-                return mediaPlayer.getCurrentPosition();
+                return -1;
             }
         }
 

@@ -18,6 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="235dp"
             android:src="@drawable/ic_bcg"
+            android:layout_marginTop="36dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tool_bar" />
@@ -54,6 +55,15 @@
             app:layout_constraintTop_toTopOf="@+id/tool_bar"
             android:padding="@dimen/cardview_compat_inset_shadow"/>
 
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/view_pager"
+            app:layout_constraintEnd_toEndOf="@+id/view_pager"
+            app:layout_constraintStart_toStartOf="@+id/view_pager"
+            app:layout_constraintTop_toTopOf="@+id/view_pager"
+            android:visibility="visible"
+            android:id="@+id/search_progress"/>
 
 
         <LinearLayout
