@@ -5,14 +5,12 @@ import android.graphics.Bitmap;
 public class SongCard {
     private String songName;
     private String author;
-    private Bitmap cover;
     private String path;
     private int duration;
 
     public SongCard(Song song) {
         songName = song.getFileName();
         author = song.getSinger();
-        cover = song.getCover();
         path = song.getPath();
         duration = song.getDuration();
     }
@@ -31,14 +29,6 @@ public class SongCard {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public Bitmap getCover() {
-        return cover;
-    }
-
-    public void setCover(Bitmap cover) {
-        this.cover = cover;
     }
 
     public String getPath() {

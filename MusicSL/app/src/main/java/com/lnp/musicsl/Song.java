@@ -18,7 +18,6 @@ public class Song {
 
     private String path;
 
-    private Bitmap cover;
 
     private int duration;
 
@@ -65,14 +64,6 @@ public class Song {
         this.size = size;
     }
 
-    public Bitmap getCover() {
-        return cover;
-    }
-
-    public void setCover(Bitmap cover) {
-        this.cover = cover;
-    }
-
     public String getFileName() {
         return fileName;
     }
@@ -80,5 +71,6 @@ public class Song {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
 }
 

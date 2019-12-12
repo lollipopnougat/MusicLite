@@ -46,15 +46,7 @@ public class MusicUtils {
                 String[] fnames = song.getPath().split("/");
                 song.setFileName(fnames[fnames.length - 1]);
                 Log.i(TAG, "歌曲:" + song.getSong() + "路径： " + song.getPath() + "时长:" + song.getDuration());
-                Bitmap bitmap;
-                try {
-                    bitmap = MusicUtils.getCover(song.getPath());
-                    song.setCover(bitmap);
-                } catch (Exception ex) {
-                    Log.i(TAG, song.getSong() + "不存在封面");
-                    bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.bg1);
-                    song.setCover(bitmap);
-                }
+
 
                 /*if (song.getSize() > 1000 * 800) {//过滤掉短音频
                     // 分离出歌曲名和歌手
@@ -88,7 +80,7 @@ public class MusicUtils {
         }
     }
 
-    private static Bitmap getCover(String mediaUri) {
+    public static Bitmap getCover(String mediaUri) {
         MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
         mediaMetadataRetriever.setDataSource(mediaUri);
         byte[] picture = mediaMetadataRetriever.getEmbeddedPicture();

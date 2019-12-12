@@ -36,6 +36,7 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
     private ImageButton imageButton;
     private TextView musicListBtn;
     private TextView aboutBtn;
+    private TextView refreshBtn;
     private DrawerLayout drawerLayout;
     private static TextView mTextView;
     public static final int SINGLE_CYCLE = 1;     //单曲循环
@@ -43,7 +44,7 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
     public static final int RANDOM_PLAY = 3;      //随机播放
     private ProgressBar progressBar;
     private static int repeatMode = ALL_CYCLE;
-    private static int po;
+    private static int position;
     private MusicConnector conn = new MusicConnector();
     private static final int CODE = 1;
     private static final int SYNC_TIME = 1;
@@ -66,8 +67,17 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
         imageButton = view.findViewById(R.id.music_mode);
         progressBar = view.findViewById(R.id.search_progress);
         aboutBtn = view.findViewById(R.id.music_about_btn);
+        refreshBtn = view.findViewById(R.id.music_refresh_btn);
         aboutBtn.setOnClickListener(v -> {
             Toast.makeText(getActivity(), "啊什么也没有--by lnp", Toast.LENGTH_SHORT).show();
+
+        });
+        refreshBtn.setOnClickListener(v -> {
+            if (EasyPermissions.hasPermissions(getContext(), perms)) {
+                updateViewPager();
+                Toast.makeText(getActivity(),"手动刷新卡片成功",Toast.LENGTH_SHORT).show();
+                //updateViewPager();
+            }
         });
         musicListBtn = view.findViewById(R.id.music_list_btn);
         musicListBtn.setOnClickListener(v -> {
@@ -76,10 +86,20 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
         });
         imageButton.setOnClickListener(v -> {
             switch (repeatMode) {
-                case ALL_CYCLE: repeatMode = SINGLE_CYCLE;imageButton.setImageResource(R.drawable.ic_repeat_one_white);break;
-                case SINGLE_CYCLE: repeatMode = RANDOM_PLAY;imageButton.setImageResource(R.drawable.ic_shuffle_white);break;
-                case RANDOM_PLAY: repeatMode =  ALL_CYCLE;imageButton.setImageResource(R.drawable.ic_repeat_white);break;
-                default: break;
+                case ALL_CYCLE:
+                    repeatMode = SINGLE_CYCLE;
+                    imageButton.setImageResource(R.drawable.ic_repeat_one_white);
+                    break;
+                case SINGLE_CYCLE:
+                    repeatMode = RANDOM_PLAY;
+                    imageButton.setImageResource(R.drawable.ic_shuffle_white);
+                    break;
+                case RANDOM_PLAY:
+                    repeatMode = ALL_CYCLE;
+                    imageButton.setImageResource(R.drawable.ic_repeat_white);
+                    break;
+                default:
+                    break;
             }
             //Intent intent = MusicListActivity.newIntent(getContext());
             //startActivity(intent);
@@ -161,6 +181,9 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
 
     }
 
+
+
+    // 主界面通信用
     @SuppressLint("HandlerLeak")
     public static Handler handler = new Handler() {
         private String fullTime;
@@ -173,13 +196,13 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
                 int second = time / 1000;
                 mSeekBar.setProgress(second);
                 mSeekBar.animate();
-                String currTime = String.format("%d : %d ", TimeUnit.MILLISECONDS.toMinutes(time),
+                String currTime = String.format("%d : %d", TimeUnit.MILLISECONDS.toMinutes(time),
                         TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
                 mTextView.setText(currTime + " / " + fullTime);
 
             } else if (msg.what == INIT_SEEK_BAR) {
                 int time = (int) msg.obj;
-                po = msg.arg1;
+                position = msg.arg1;
                 mSeekBar.setMax(time / 1000);
                 fullTime = String.format("%d : %d ", TimeUnit.MILLISECONDS.toMinutes(time),
                         TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
@@ -188,22 +211,23 @@ public class MainFragment extends Fragment implements EasyPermissions.Permission
             } else if (msg.what == FINE) {
                 switch (repeatMode) {
                     case ALL_CYCLE:
-                        if (po == musicData.size() - 1) {
-                            po = 0;
+                        if (position == musicData.size() - 1) {
+                            position = 0;
                         } else {
-                            po++;
+                            position++;
                         }
                         break;
                     case SINGLE_CYCLE:
                         break;
                     case RANDOM_PLAY:
                         Random random = new Random();
-                        po = random.nextInt(musicData.size());
+                        position = random.nextInt(musicData.size());
                         break;
-                    default: break;
+                    default:
+                        break;
                 }
-
-                MainFragment.musicBinder.start(musicData.get(po).getPath());
+                MainFragment.musicBinder.start(musicData.get(position).getPath());
+                CardPagerAdapter.playingIndex = position;
                 new SyncSeekBar().start();
             } else if (msg.what == START) {
                 new SyncSeekBar().start();

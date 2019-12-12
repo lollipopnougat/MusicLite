@@ -147,6 +147,7 @@ public class MusicListFragment extends Fragment {
             MainFragment.musicBinder.start(mSong.getPath());
             MainFragment.handler.sendMessage(msgf);
             MainFragment.musicBinder.play();
+            CardPagerAdapter.playingIndex = position;
             MainFragment.handler.sendEmptyMessage(START);
             //new SyncSeekBar().start();
             //Intent intent = MusicPagerActivity.newIntent(getActivity(), mMusic.getId());

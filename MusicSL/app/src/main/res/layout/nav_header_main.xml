@@ -95,5 +95,23 @@
                 android:id="@+id/music_about_btn"
                 android:textSize="20sp" />
         </com.balysv.materialripple.MaterialRippleLayout>
+        <com.balysv.materialripple.MaterialRippleLayout
+            app:mrl_rippleColor="@color/grey"
+            app:mrl_rippleRoundedCorners="6dp"
+            app:mrl_rippleOverlay="true"
+            app:mrl_rippleAlpha="0.3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="350dp"
+                android:layout_height="50dp"
+                android:gravity="center|left"
+                android:paddingLeft="20dp"
+                android:text="@string/refresh"
+                android:textColor="@color/primaryText"
+                android:id="@+id/music_refresh_btn"
+                android:textSize="20sp" />
+        </com.balysv.materialripple.MaterialRippleLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

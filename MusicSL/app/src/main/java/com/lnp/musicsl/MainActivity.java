@@ -3,13 +3,11 @@ package com.lnp.musicsl;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -106,6 +104,16 @@ public class MainActivity extends SingleFragmentActivity implements EasyPermissi
         Log.i("测试","2处回调："+requestCode);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            moveTaskToBack(false);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 
     @Override
     protected Fragment createFragment() {
